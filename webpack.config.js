@@ -5,7 +5,7 @@ module.exports = {
   mode: "development",
   entry: path.resolve(__dirname, "frontend", "src", "index.ts"),
   output: {
-    path: path.resolve(__dirname, "dist")
+    path: path.resolve(__dirname, "dist", "js")
   },
   resolve: {
     extensions: [".ts", ".tsx", ".js"]
@@ -19,6 +19,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
+      filename: "../index.html",
       template: path.resolve(__dirname, "frontend", "statics", "index.html")
     })
   ]

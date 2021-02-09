@@ -23,7 +23,7 @@ func main() {
 
 	e := echo.New()
 	e.Renderer = t
-	e.Static("/", "dist")
+	e.Static("/js", "dist/js")
 	e.GET("*", func(c echo.Context) error {
 		return c.Render(http.StatusOK, "index.html", "")
 	})
