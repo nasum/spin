@@ -1,0 +1,11 @@
+root = "."
+tmp_dir = "tmp"
+
+
+[build]
+cmd = "go build -o spin ."
+bin = "spin"
+include_ext = ["go", "tpl", "tmpl", "html", "ts", "tsx", "js"]
+exclude_dir = ["tmp", "vendor", "node_modules"]
+log = "air.log"
+delay = 1000

@@ -102,3 +102,4 @@ typings/
 .dynamodb/
 
 dist/
+spin

@@ -1,1 +1,1 @@
-alert('hoge')
+console.log('hogehoge')

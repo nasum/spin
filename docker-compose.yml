@@ -3,9 +3,9 @@ services:
   app:
     build:
       context: .
-      target: backend_build
+      target: dev
     volumes:
       - ./:/app
-    command: go run main.go
+    command: air -c .air.toml
     ports:
       - "1323:1323"
