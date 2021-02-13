@@ -1,8 +1,11 @@
-version: '3'
+version: '3.8'
 services:
   app:
-    build: .
+    build:
+      context: .
+      target: backend_build
     volumes:
-      - ./:/go/src/app
+      - ./:/app
+    command: go run main.go
     ports:
       - "1323:1323"

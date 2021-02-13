@@ -16,7 +16,7 @@ COPY . .
 COPY --from=frontend_build /build/dist ./dist
 
 RUN apk add --no-cache git \
-    && go build -o app
+    && go build -o spin
 
 FROM alpine
 
@@ -24,9 +24,8 @@ WORKDIR /app
 
 COPY --from=backend_build /build .
 
-
 RUN addgroup go \
     && adduser -D -G go go \
-    && chown -R go:go /app/app
+    && chown -R go:go /app/spin
 
-CMD ["./app"]
+CMD ["./spin"]
