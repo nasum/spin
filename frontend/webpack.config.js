@@ -3,9 +3,9 @@ const path = require('path')
 
 module.exports = {
   mode: "development",
-  entry: path.resolve(__dirname, "frontend", "src", "index.ts"),
+  entry: path.resolve(__dirname, "src", "index.ts"),
   output: {
-    path: path.resolve(__dirname, "dist", "js")
+    path: path.resolve(__dirname, "..", "dist", "js")
   },
   resolve: {
     extensions: [".ts", ".tsx", ".js"]
@@ -20,7 +20,7 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       filename: "../index.html",
-      template: path.resolve(__dirname, "frontend", "statics", "index.html")
+      template: path.resolve(__dirname, "statics", "index.html")
     })
   ]
 }
