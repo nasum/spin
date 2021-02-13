@@ -23,6 +23,7 @@ FROM alpine
 WORKDIR /app
 
 COPY --from=backend_build /build .
+COPY --from=frontend_build /dist .
 
 RUN addgroup go \
     && adduser -D -G go go \
