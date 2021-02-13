@@ -25,7 +25,7 @@ COPY --from=frontend_build /build/dist ./dist
 RUN go get -u github.com/cosmtrek/air
 
 RUN apk add --no-cache git \
-    && go build -o spin
+    && go build -o spin ./cmd/app/main.go
 
 FROM alpine
 
