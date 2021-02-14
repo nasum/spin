@@ -1,31 +1,31 @@
 const ESLintPlugin = require('eslint-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const path = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
 
 module.exports = {
-  mode: "development",
-  entry: path.resolve(__dirname, "src", "index.tsx"),
+  mode: 'development',
+  entry: path.resolve(__dirname, 'src', 'index.tsx'),
   output: {
-    path: path.resolve(__dirname, "..", "dist", "js")
+    path: path.resolve(__dirname, '..', 'dist', 'js'),
   },
   resolve: {
-    extensions: [".ts", ".tsx", ".js"]
+    extensions: ['.ts', '.tsx', '.js'],
   },
   module: {
-    rules:[
+    rules: [
       {
-        test: /\.tsx?$/, loader: "ts-loader"
-      }
-    ]
+        test: /\.tsx?$/,
+        loader: 'ts-loader',
+      },
+    ],
   },
   plugins: [
     new HtmlWebpackPlugin({
-      filename: "../index.html",
-      template: path.resolve(__dirname, "statics", "index.html")
+      filename: '../index.html',
+      template: path.resolve(__dirname, 'statics', 'index.html'),
     }),
     new ESLintPlugin({
-      fix: true,
-      extensions: ['js', 'ts', 'tsx']
-    })
-  ]
-}
+      extensions: ['js', 'ts', 'tsx'],
+    }),
+  ],
+};
