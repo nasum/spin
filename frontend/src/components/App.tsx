@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default () => {
+export const App: React.FC = () => {
   return (
     <div>
       <h1>Spin</h1>
