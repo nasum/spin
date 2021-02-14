@@ -1,6 +1,8 @@
-const ESLintPlugin = require('eslint-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const path = require('path');
+const ESLintPlugin = require('eslint-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+
+const path = require('path')
 
 module.exports = {
   mode: 'development',
@@ -17,9 +19,17 @@ module.exports = {
         test: /\.tsx?$/,
         loader: 'ts-loader',
       },
+      {
+        test: /\.css$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader'],
+      },
     ],
   },
   plugins: [
+    new MiniCssExtractPlugin({
+      filename: 'styles.css',
+      chunkFilename: 'styles.css',
+    }),
     new HtmlWebpackPlugin({
       filename: '../index.html',
       template: path.resolve(__dirname, 'statics', 'index.html'),
@@ -28,4 +38,4 @@ module.exports = {
       extensions: ['js', 'ts', 'tsx'],
     }),
   ],
-};
+}
