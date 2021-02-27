@@ -1,16 +1,7 @@
 import React from 'react'
-import { Path, RoconRoot, useRoutes } from 'rocon/react'
-
-function root() {
-  return <p>root</p>
-}
-
-const toplevelRoutes = Path()
-  .exact({
-    action: root,
-  })
-  .route('login', (route) => route.action(() => <p>login</p>))
-  .route('signin', (route) => route.action(() => <p>signin</p>))
+import { RoconRoot, useRoutes } from 'rocon/react'
+import { toplevelRoutes } from '../routes'
+import { AppHeader } from './AppHeader'
 
 const Routes: React.FC = () => {
   return useRoutes(toplevelRoutes)
@@ -19,6 +10,7 @@ const Routes: React.FC = () => {
 export const Router: React.FC = () => {
   return (
     <RoconRoot>
+      <AppHeader />
       <Routes />
     </RoconRoot>
   )

@@ -1,4 +1,6 @@
 import React from 'react'
+import { Link } from 'rocon/react'
+import { toplevelRoutes } from '../routes'
 
 export const AppHeader: React.FC = () => {
   return (
@@ -8,6 +10,11 @@ export const AppHeader: React.FC = () => {
           <div className="flex items-center">
             <div className="flex-shrink-0">
               <h1 className="text-white">Spin</h1>
+            </div>
+          </div>
+          <div className="ml-3 relative">
+            <div className="text-white">
+              <Link route={toplevelRoutes._.signin}>signin</Link>
             </div>
           </div>
         </div>
