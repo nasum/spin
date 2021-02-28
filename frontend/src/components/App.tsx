@@ -3,7 +3,7 @@ import { Router } from './Router'
 
 export const App: React.FC = () => {
   return (
-    <div className="relative bg-white">
+    <div className="relative bg-gray-100 h-screen">
       <Router />
     </div>
   )

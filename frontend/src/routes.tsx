@@ -1,5 +1,6 @@
 import React from 'react'
 import { Path } from 'rocon/react'
+import { SignUp } from './components/SignUp'
 
 function root() {
   return <p>root</p>
@@ -10,4 +11,4 @@ export const toplevelRoutes = Path()
     action: root,
   })
   .route('login', (route) => route.action(() => <p>login</p>))
-  .route('signin', (route) => route.action(() => <p>signin</p>))
+  .route('signup', (route) => route.action(() => <SignUp />))
