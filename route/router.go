@@ -7,6 +7,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/nasum/spin/handler"
 )
 
 type Template struct {
@@ -29,6 +30,8 @@ func Init() {
 
 	e.Renderer = t
 	e.Static("/js", "dist/js")
+	e.GET("/oauth/twitter", handler.SignUp())
+	e.GET("/oauth/twitter/callback", handler.Callback())
 	e.GET("*", func(c echo.Context) error {
 		return c.Render(http.StatusOK, "index.html", "")
 	})

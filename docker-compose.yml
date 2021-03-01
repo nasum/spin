@@ -9,3 +9,7 @@ services:
     command: air -c .air.toml
     ports:
       - "1323:1323"
+    environment:
+      TWITTER_API_KEY: ${TWITTER_API_KEY}
+      TWITTER_API_KEY_SECRET: ${TWITTER_API_KEY_SECRET}
+      CALLBACK_URL: ${CALLBACK_URL}
