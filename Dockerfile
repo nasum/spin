@@ -1,10 +1,12 @@
-FROM golang:1.14.3-alpine as dev
+FROM golang:1.14.3 as dev
 
 WORKDIR /app
 
 COPY . .
 
 RUN go get -u github.com/cosmtrek/air
+RUN curl -L https://github.com/golang-migrate/migrate/releases/download/v4.14.1/migrate.linux-amd64.tar.gz | tar xvz \
+    && mv migrate.linux-amd64 /bin/migrate
 
 FROM node:14-alpine as frontend_build
 
@@ -21,8 +23,6 @@ WORKDIR /build
 
 COPY . .
 COPY --from=frontend_build /build/dist ./dist
-
-RUN go get -u github.com/cosmtrek/air
 
 RUN apk add --no-cache git \
     && go build -o spin ./cmd/app/main.go
