@@ -5,9 +5,12 @@ import (
 	"net/http"
 	"text/template"
 
+	"github.com/gorilla/sessions"
+	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/nasum/spin/handler"
+	"github.com/nasum/spin/infrastructure"
 )
 
 type Template struct {
@@ -23,17 +26,26 @@ func Init() {
 		templates: template.Must(template.ParseGlob("dist/*.html")),
 	}
 
+	infrastructure.Init()
+
 	e := echo.New()
 
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+	e.Use(session.Middleware(sessions.NewCookieStore([]byte("secret"))))
 
 	e.Renderer = t
 	e.Static("/js", "dist/js")
-	e.GET("/oauth/twitter", handler.SignUp())
-	e.GET("/oauth/twitter/callback", handler.Callback())
+
+	// OAuth
+	oauth := e.Group("/oauth")
+	oauth.GET("/twitter", handler.SignUp())
+	oauth.GET("/twitter/callback", handler.Callback())
+
+	// forward frontend router
 	e.GET("*", func(c echo.Context) error {
 		return c.Render(http.StatusOK, "index.html", "")
 	})
 	e.Logger.Fatal(e.Start(":1323"))
+	infrastructure.Close()
 }
