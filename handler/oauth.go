@@ -5,40 +5,24 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/dghubble/go-twitter/twitter"
 	"github.com/dghubble/oauth1"
-	twitterOAuth1 "github.com/dghubble/oauth1/twitter"
 	"github.com/labstack/echo/v4"
-	"github.com/nasum/spin/constants"
 	"github.com/nasum/spin/infrastructure"
 	"github.com/nasum/spin/model"
+	"github.com/nasum/spin/twitter"
 )
 
 var Config *oauth1.Config
 
 func SignUp() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		e := constants.GetEnv()
-		Config := oauth1.Config{
-			ConsumerKey:    e.TwitterAPIKey,
-			ConsumerSecret: e.TwitterAPIKeySecret,
-			CallbackURL:    e.CallbackURL,
-			Endpoint:       twitterOAuth1.AuthorizeEndpoint,
-		}
-
-		requestToken, _, err := Config.RequestToken()
-
-		if err != nil {
-			return echo.NewHTTPError(http.StatusInternalServerError, "Can not create twitter request token")
-		}
-
-		authorizationURL, err := Config.AuthorizationURL(requestToken)
+		authorizationURL, err := twitter.GetAuthorizationURL()
 
 		if err != nil {
 			return echo.NewHTTPError(http.StatusInternalServerError, "Can not create twitter authorization url")
 		}
 
-		http.Redirect(c.Response().Writer, c.Request(), authorizationURL.String(), http.StatusFound)
+		http.Redirect(c.Response().Writer, c.Request(), authorizationURL, http.StatusFound)
 
 		return nil
 	}
@@ -46,16 +30,7 @@ func SignUp() echo.HandlerFunc {
 
 func Callback() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		ctx := c.Request().Context()
 		conn := infrastructure.Connection
-
-		e := constants.GetEnv()
-		config := oauth1.Config{
-			ConsumerKey:    e.TwitterAPIKey,
-			ConsumerSecret: e.TwitterAPIKeySecret,
-			CallbackURL:    e.CallbackURL,
-			Endpoint:       twitterOAuth1.AuthorizeEndpoint,
-		}
 
 		requestToken, verifier, err := oauth1.ParseAuthorizationCallback(c.Request())
 
@@ -64,33 +39,25 @@ func Callback() echo.HandlerFunc {
 			return echo.NewHTTPError(http.StatusInternalServerError, "Can not create twitter request token")
 		}
 
-		_, requestTokenSecret, err := config.RequestToken()
+		accessToken, accessTokenSeacret, err := twitter.GetAccessToken(requestToken, verifier)
 
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "%s: %v\n", os.Args[0], err)
-			return echo.NewHTTPError(http.StatusInternalServerError, "Can not create twitter request token")
+			return echo.NewHTTPError(http.StatusInternalServerError, "Can not get access token")
 		}
 
-		accessToken, accessSeacret, err := config.AccessToken(requestToken, requestTokenSecret, verifier)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "%s: %v\n", os.Args[0], err)
-			return echo.NewHTTPError(http.StatusInternalServerError, "Can not create twitter accessToken")
-		}
-
-		httpClient := config.Client(ctx, oauth1.NewToken(accessToken, accessSeacret))
-		twitterClient := twitter.NewClient(httpClient)
-
-		accountVerifyParams := &twitter.AccountVerifyParams{
-			IncludeEntities: twitter.Bool(false),
-			SkipStatus:      twitter.Bool(true),
-			IncludeEmail:    twitter.Bool(false),
-		}
-
-		account, _, err := twitterClient.Accounts.VerifyCredentials(accountVerifyParams)
+		client, err := twitter.GetTwitterClient(accessToken, accessTokenSeacret)
 
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "%s: %v\n", os.Args[0], err)
-			return echo.NewHTTPError(http.StatusInternalServerError, "Can not get twitter user")
+			return echo.NewHTTPError(http.StatusInternalServerError, "Can not create twitter client")
+		}
+
+		account, err := twitter.GetAccount(client)
+
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "%s: %v\n", os.Args[0], err)
+			return echo.NewHTTPError(http.StatusInternalServerError, "Cant not get account")
 		}
 
 		user := model.User{
@@ -98,7 +65,7 @@ func Callback() echo.HandlerFunc {
 		}
 		twitterToken := model.TwitterToken{
 			AccessToken:        accessToken,
-			AccessTokenSeacret: accessSeacret,
+			AccessTokenSeacret: accessTokenSeacret,
 			User:               user,
 		}
 
