@@ -103,3 +103,4 @@ typings/
 
 dist/
 spin
+.env

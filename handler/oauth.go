@@ -61,7 +61,8 @@ func Callback() echo.HandlerFunc {
 		}
 
 		user := model.User{
-			Name: account.ScreenName,
+			Name:             account.ScreenName,
+			TwitterAccountId: account.IDStr,
 		}
 		twitterToken := model.TwitterToken{
 			AccessToken:        accessToken,
