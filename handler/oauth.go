@@ -7,9 +7,8 @@ import (
 
 	"github.com/dghubble/oauth1"
 	"github.com/labstack/echo/v4"
-	"github.com/nasum/spin/infrastructure"
-	"github.com/nasum/spin/model"
 	"github.com/nasum/spin/twitter"
+	"github.com/nasum/spin/usecase"
 )
 
 var Config *oauth1.Config
@@ -30,8 +29,6 @@ func SignUp() echo.HandlerFunc {
 
 func Callback() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		conn := infrastructure.Connection
-
 		requestToken, verifier, err := oauth1.ParseAuthorizationCallback(c.Request())
 
 		if err != nil {
@@ -60,17 +57,7 @@ func Callback() echo.HandlerFunc {
 			return echo.NewHTTPError(http.StatusInternalServerError, "Cant not get account")
 		}
 
-		user := model.User{
-			Name:             account.ScreenName,
-			TwitterAccountId: account.IDStr,
-		}
-		twitterToken := model.TwitterToken{
-			AccessToken:        accessToken,
-			AccessTokenSeacret: accessTokenSeacret,
-			User:               user,
-		}
-
-		conn.Create(&twitterToken)
+		usecase.CreateUser(account.ScreenName, account.IDStr, accessToken, accessTokenSeacret)
 
 		return nil
 	}
