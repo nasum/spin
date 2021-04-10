@@ -1,0 +1,29 @@
+name: test
+on: [push]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:13.2
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: test
+    container:
+      image: golang:1.14
+      env:
+         DATABASE_URL: postgres://test:test@postgres:5432/test?sslmode=disable
+    steps:
+      - uses: actions/checkout@v2
+      - name: get dependencies
+        run: go get -v -t ./cmd/app
+      - name: install migrate
+        run: |
+          curl -L https://github.com/golang-migrate/migrate/releases/download/v4.14.1/migrate.linux-amd64.tar.gz | tar xvz
+          mv migrate.linux-amd64 /bin/migrate
+      - name: migrate
+        run: make db-up
+      - name: test
+        run: make test
+
