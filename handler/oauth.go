@@ -57,7 +57,13 @@ func Callback() echo.HandlerFunc {
 			return echo.NewHTTPError(http.StatusInternalServerError, "Cant not get account")
 		}
 
-		usecase.CreateUser(account.ScreenName, account.IDStr, accessToken, accessTokenSeacret)
+		user := usecase.GetUserByTwitterAccountId(account.IDStr)
+
+		if user.ID == 0 {
+			usecase.CreateUser(account.ScreenName, account.IDStr, accessToken, accessTokenSeacret)
+		} else {
+			http.Redirect(c.Response().Writer, c.Request(), "/home", http.StatusFound)
+		}
 
 		return nil
 	}
