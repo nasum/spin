@@ -12,7 +12,7 @@ FROM node:14-alpine as frontend_build
 
 WORKDIR /build
 
-copy . .
+COPY . .
 
 RUN yarn install \
     && yarn run build
