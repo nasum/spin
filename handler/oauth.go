@@ -7,6 +7,7 @@ import (
 
 	"github.com/dghubble/oauth1"
 	"github.com/labstack/echo/v4"
+	"github.com/nasum/spin/lib"
 	"github.com/nasum/spin/twitter"
 	"github.com/nasum/spin/usecase"
 )
@@ -29,6 +30,8 @@ func SignUp() echo.HandlerFunc {
 
 func Callback() echo.HandlerFunc {
 	return func(c echo.Context) error {
+		cc := c.(*lib.Context)
+
 		requestToken, verifier, err := oauth1.ParseAuthorizationCallback(c.Request())
 
 		if err != nil {
@@ -55,6 +58,13 @@ func Callback() echo.HandlerFunc {
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "%s: %v\n", os.Args[0], err)
 			return echo.NewHTTPError(http.StatusInternalServerError, "Cant not get account")
+		}
+
+		err = cc.StartSession(account.IDStr)
+
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "%s: %v\n", os.Args[0], err)
+			return echo.NewHTTPError(http.StatusInternalServerError, "Can not start session")
 		}
 
 		user := usecase.GetUserByTwitterAccountId(account.IDStr)

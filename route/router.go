@@ -11,6 +11,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/nasum/spin/handler"
 	"github.com/nasum/spin/infrastructure"
+	"github.com/nasum/spin/lib"
 )
 
 type Template struct {
@@ -33,6 +34,13 @@ func Init() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(session.Middleware(sessions.NewCookieStore([]byte("secret"))))
+
+	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			cc := &lib.Context{c}
+			return next(cc)
+		}
+	})
 
 	e.Renderer = t
 	e.Static("/js", "dist/js")
