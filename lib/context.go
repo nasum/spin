@@ -56,5 +56,9 @@ func (c *Context) GetTwitterID() (string, error) {
 		return "", fmt.Errorf("%s: %v\n", os.Args[0], err)
 	}
 
+	if sess.Values["TwitterID"] == nil {
+		return "", nil
+	}
+
 	return sess.Values["TwitterID"].(string), nil
 }
