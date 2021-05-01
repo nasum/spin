@@ -50,6 +50,8 @@ func Init() {
 	oauth.GET("/twitter", handler.SignUp())
 	oauth.GET("/twitter/callback", handler.Callback())
 
+	e.GET("/user", handler.GetUser())
+
 	// forward frontend router
 	e.GET("*", func(c echo.Context) error {
 		return c.Render(http.StatusOK, "index.html", "")

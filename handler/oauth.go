@@ -12,8 +12,6 @@ import (
 	"github.com/nasum/spin/usecase"
 )
 
-var Config *oauth1.Config
-
 func SignUp() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		authorizationURL, err := twitter.GetAuthorizationURL()
@@ -69,8 +67,9 @@ func Callback() echo.HandlerFunc {
 
 		user := usecase.GetUserByTwitterAccountId(account.IDStr)
 
-		if user.ID == 0 {
+		if user.Name == "" {
 			usecase.CreateUser(account.ScreenName, account.IDStr, accessToken, accessTokenSeacret)
+			http.Redirect(c.Response().Writer, c.Request(), "/home", http.StatusFound)
 		} else {
 			http.Redirect(c.Response().Writer, c.Request(), "/home", http.StatusFound)
 		}
