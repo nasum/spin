@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link } from 'rocon/react'
 import { toplevelRoutes } from '../routes'
+import { AuthContext } from '../context/auth'
 
 export const AppHeader: React.FC = () => {
+  const { state } = useContext(AuthContext)
+
   return (
     <nav className="bg-gray-800">
       <div className="max-w-7xl mx-auto">
@@ -14,7 +17,11 @@ export const AppHeader: React.FC = () => {
           </div>
           <div className="ml-3 relative">
             <div className="text-white">
-              <Link route={toplevelRoutes._.signup}>signup</Link>
+              {state.name ? (
+                <span>{state.name}</span>
+              ) : (
+                <Link route={toplevelRoutes._.signup}>signup</Link>
+              )}
             </div>
           </div>
         </div>
