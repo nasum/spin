@@ -11,5 +11,5 @@ require (
 	github.com/lib/pq v1.10.1
 	github.com/stretchr/testify v1.7.0
 	gorm.io/driver/postgres v1.0.8
-	gorm.io/gorm v1.21.9
+	gorm.io/gorm v1.24.3
 )
